@@ -1,0 +1,139 @@
+<mxfile host="app.diagrams.net" agent="drawio-file" version="24.7.7" type="device">
+  <diagram id="chumputer-methods-pipeline" name="Methods pipeline">
+    <mxGraphModel dx="1050" dy="1250" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="960" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="grpData" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="40" y="40" width="860" height="352" as="geometry" />
+        </mxCell>
+        <mxCell id="bgData" value="" style="rounded=1;arcSize=3;fillColor=#F7F7F7;strokeColor=#C8C8C8;html=1;" parent="grpData" vertex="1">
+          <mxGeometry width="860" height="352" as="geometry" />
+        </mxCell>
+        <mxCell id="lblData" value="DATA" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#666666;fontFamily=Helvetica;" parent="grpData" vertex="1">
+          <mxGeometry x="16" y="8" width="320" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="src" value="&lt;b&gt;Chum salmon scale images and expert age labels&lt;/b&gt;&lt;br&gt;Acetate scale impressions digitized by NOAA, ADF&amp;amp;G, NSRAA, and DFO; ages assigned by skilled readers (n = 66,153)" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpData" vertex="1">
+          <mxGeometry x="170" y="32" width="520" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="qfilter" value="&lt;b&gt;Image quality filtering&lt;/b&gt;&lt;br&gt;Regenerated scales omitted; low-quality images removed (Laplacian score)" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpData" vertex="1">
+          <mxGeometry x="170" y="112" width="520" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="subsample" value="&lt;b&gt;Subsampling (n = 15,754)&lt;/b&gt;&lt;br&gt;Random with respect to donating laboratory, stratified by age to reduce age-class imbalance" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpData" vertex="1">
+          <mxGeometry x="170" y="192" width="520" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="split" value="&lt;b&gt;Stratified random split&lt;/b&gt;&lt;br&gt;Training 70% (n = 11,012) • Validation 15% (n = 2,365) • Test 15% (n = 2,377)" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpData" vertex="1">
+          <mxGeometry x="170" y="272" width="520" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="grpPrep" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="40" y="412" width="860" height="192" as="geometry" />
+        </mxCell>
+        <mxCell id="bgPrep" value="" style="rounded=1;arcSize=3;fillColor=#F7F7F7;strokeColor=#C8C8C8;html=1;" parent="grpPrep" vertex="1">
+          <mxGeometry width="860" height="192" as="geometry" />
+        </mxCell>
+        <mxCell id="lblPrep" value="IMAGE PREPROCESSING" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#666666;fontFamily=Helvetica;" parent="grpPrep" vertex="1">
+          <mxGeometry x="16" y="8" width="320" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="samBox" value="&lt;b&gt;SAM preprocessing&lt;/b&gt;&lt;br&gt;Scale segmented and cropped; background removed" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpPrep" vertex="1">
+          <mxGeometry x="85" y="32" width="330" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="yoloBox" value="&lt;b&gt;YOLO v5 preprocessing&lt;/b&gt;&lt;br&gt;Scale detected and cropped; background retained" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpPrep" vertex="1">
+          <mxGeometry x="445" y="32" width="330" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="stdBox" value="&lt;b&gt;Image standardization (both branches)&lt;/b&gt;&lt;br&gt;Convert to RGB (3 channels) • resize to 512 × 512 pixels • normalize to [0, 1]" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpPrep" vertex="1">
+          <mxGeometry x="170" y="112" width="520" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="grpModel" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="40" y="624" width="860" height="304" as="geometry" />
+        </mxCell>
+        <mxCell id="bgModel" value="" style="rounded=1;arcSize=3;fillColor=#F7F7F7;strokeColor=#C8C8C8;html=1;" parent="grpModel" vertex="1">
+          <mxGeometry width="860" height="304" as="geometry" />
+        </mxCell>
+        <mxCell id="lblModel" value="CNN TRAINING AND PREDICTION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#666666;fontFamily=Helvetica;" parent="grpModel" vertex="1">
+          <mxGeometry x="16" y="8" width="320" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="cnnSam" value="&lt;b&gt;CNN training – SAM images&lt;/b&gt;&lt;br&gt;EfficientNetV2L • NASNetLarge • ConvNeXtLarge&lt;br&gt;Two-phase training with transfer learning" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpModel" vertex="1">
+          <mxGeometry x="85" y="32" width="330" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="cnnYolo" value="&lt;b&gt;CNN training – YOLO images&lt;/b&gt;&lt;br&gt;EfficientNetV2L • NASNetLarge • ConvNeXtLarge&lt;br&gt;Two-phase training with transfer learning" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpModel" vertex="1">
+          <mxGeometry x="445" y="32" width="330" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="predSam" value="&lt;b&gt;Individual model predictions&lt;/b&gt;&lt;br&gt;Fractional age per model on test images" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpModel" vertex="1">
+          <mxGeometry x="85" y="136" width="330" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="predYolo" value="&lt;b&gt;Individual model predictions&lt;/b&gt;&lt;br&gt;Fractional age per model on test images" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpModel" vertex="1">
+          <mxGeometry x="445" y="136" width="330" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="ensSam" value="&lt;b&gt;Ensemble prediction&lt;/b&gt;&lt;br&gt;Weighted average of three models (validation-MSE weights), rounded to nearest integer age" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpModel" vertex="1">
+          <mxGeometry x="85" y="208" width="330" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="ensYolo" value="&lt;b&gt;Ensemble prediction&lt;/b&gt;&lt;br&gt;Weighted average of three models (validation-MSE weights), rounded to nearest integer age" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpModel" vertex="1">
+          <mxGeometry x="445" y="208" width="330" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="grpEval" value="" style="group" parent="1" vertex="1" connectable="0">
+          <mxGeometry x="40" y="948" width="860" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="bgEval" value="" style="rounded=1;arcSize=3;fillColor=#F7F7F7;strokeColor=#C8C8C8;html=1;" parent="grpEval" vertex="1">
+          <mxGeometry width="860" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="lblEval" value="EVALUATION" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#666666;fontFamily=Helvetica;" parent="grpEval" vertex="1">
+          <mxGeometry x="16" y="8" width="320" height="18" as="geometry" />
+        </mxCell>
+        <mxCell id="agree" value="&lt;b&gt;Comparison with expert ages&lt;/b&gt;&lt;br&gt;Agreement = proportion of ensemble ages concordant with expert age labels, by age class and preprocessing method" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpEval" vertex="1">
+          <mxGeometry x="170" y="32" width="520" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="review" value="&lt;b&gt;Discrepancy review&lt;/b&gt;&lt;br&gt;Discrepant images independently re-read by ADF&amp;amp;G and DFO age readers using original images; classified into five categories" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#333333;fontSize=12;fontFamily=Helvetica;align=center;verticalAlign=middle;spacingLeft=8;spacingRight=8;" parent="grpEval" vertex="1">
+          <mxGeometry x="170" y="112" width="520" height="64" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="src" target="qfilter" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="qfilter" target="subsample" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="subsample" target="split" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.1538;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="split" target="samBox" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.8462;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="split" target="yoloBox" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1538;entryY=0;entryDx=0;entryDy=0;" parent="1" source="samBox" target="stdBox" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.8462;entryY=0;entryDx=0;entryDy=0;" parent="1" source="yoloBox" target="stdBox" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.1538;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="stdBox" target="cnnSam" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.8462;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="stdBox" target="cnnYolo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="cnnSam" target="predSam" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="cnnYolo" target="predYolo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="predSam" target="ensSam" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="predYolo" target="ensYolo" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.1538;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ensSam" target="agree" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.8462;entryY=0;entryDx=0;entryDy=0;" parent="1" source="ensYolo" target="agree" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#000000;strokeWidth=1.5;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="agree" target="review" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
