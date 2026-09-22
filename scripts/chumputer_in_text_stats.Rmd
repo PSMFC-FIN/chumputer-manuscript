@@ -1,0 +1,171 @@
+---
+title: "chumputer in text statistics"
+author: "Matt Callahan"
+date: "2026-09-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Training and Validation
+SAM and YOLO MSE
+```{r}
+library(tidyverse)
+ConvNeXt_Sam <- read.csv("./Output/Tables/ConvNeXtLargesam_history.csv") %>%
+  mutate(PreProcess = "Sam",
+         Model = "ConvNeXt",
+         epoch = seq(1,nrow(.),by=1)) %>%
+  select(-c(lr,val_loss,loss)) %>%
+  reshape2::melt(.,id.vars=c("Model","PreProcess","epoch"))
+
+ConvNeXt_Yolo <- read.csv("./Output/Tables/ConvNeXtLargeyolo_history.csv")%>%
+  mutate(PreProcess = "Yolo",
+         Model = "ConvNeXt",
+         epoch = seq(1,nrow(.),by=1)) %>%
+  select(-c(lr,val_loss,loss)) %>%
+  reshape2::melt(.,id.vars=c("Model","PreProcess","epoch"))
+
+effnetv2_Sam <- read.csv("./Output/Tables/effnetv2Largesam_history.csv")%>%
+  mutate(PreProcess = "Sam",
+         Model = "effnetv2",
+         epoch = seq(1,nrow(.),by=1)) %>%
+  select(-c(lr,val_loss,loss)) %>%
+  reshape2::melt(.,id.vars=c("Model","PreProcess","epoch"))
+
+effnetv2_Yolo <- read.csv("./Output/Tables/effnetv2Largeyolo_history.csv")%>%
+  mutate(PreProcess = "Yolo",
+         Model = "effnetv2",
+         epoch = seq(1,nrow(.),by=1)) %>%
+  select(-c(lr,val_loss,loss)) %>%
+  reshape2::melt(.,id.vars=c("Model","PreProcess","epoch"))
+  
+NASNet_Sam <- read.csv("./Output/Tables/NASNetLargesam_history.csv")%>%
+  mutate(PreProcess = "Sam",
+         Model = "NASNet",
+         epoch = seq(1,nrow(.),by=1)) %>%
+  select(-c(lr,val_loss,loss)) %>%
+  reshape2::melt(.,id.vars=c("Model","PreProcess","epoch"))
+
+NASNet_Yolo <- read.csv("./Output/Tables/NASNetLargeyolo_history.csv")%>%
+  mutate(PreProcess = "Yolo",
+         Model = "NASNet",
+         epoch = seq(1,nrow(.),by=1)) %>%
+  select(-c(lr,val_loss,loss)) %>%
+  reshape2::melt(.,id.vars=c("Model","PreProcess","epoch"))
+  
+TrainVal <- bind_rows(ConvNeXt_Sam, ConvNeXt_Yolo,
+                      effnetv2_Sam, effnetv2_Yolo,
+                      NASNet_Sam, NASNet_Yolo)
+
+TrainVal %>% 
+  group_by(variable,Model, PreProcess) %>%
+  slice_min(value)%>%
+  arrange(variable,value)
+
+TrainVal %>% 
+  group_by(variable,Model, PreProcess) %>%
+  slice_min(value)%>%
+  filter(variable=='val_mse')%>%
+  group_by(PreProcess) %>% 
+  summarize(MeanMSE = mean(value),
+            sdMSE = sd(value))
+
+
+
+TrainVal %>% 
+  group_by(variable,Model, PreProcess) %>%
+  slice_min(value)%>%
+  filter(variable=='val_mse')%>%
+  group_by(PreProcess) %>% 
+  summarize(MeanEpoch = mean(epoch),
+            sdEpoch = sd(epoch))
+```
+
+
+## Test Data
+
+
+```{r}
+YoloRes <- read.csv("./Output/Tables/EnsemblingPredwithImageID_512_Finalyolo2.csv") %>%
+  mutate(PreProcess = "Yolo")
+
+SamRes <- read.csv("./Output/Tables/EnsemblingPredwithImageID_512_Final.csv") %>%
+  mutate(PreProcess = "Sam")
+
+# Added effnetb4
+# effnetb4Res <- read.csv("./effnetb4PredwithImageID_380_Finalraw.csv") %>%
+#   mutate(PreProcess = "effnetb4")
+
+ModelRes <- YoloRes %>%
+  bind_rows(.,SamRes) #%>%
+  #bind_rows(.,effnetb4Res)
+
+nScales_Model <- ModelRes %>%
+     group_by(PreProcess,label)%>%
+     summarize(nScales = n())
+
+ResSummary <- ModelRes %>%
+  select(filename,label,PreProcess, effnetv2l,NASNetLarge,ConvNeXt, combined_test_predictions_round)%>%
+  reshape2::melt(id.vars=c('filename','label','PreProcess'))%>%
+  mutate(AgeEst_rnd = round(value),
+         Correct = ifelse(AgeEst_rnd == label,1,0))%>%
+  group_by(label,PreProcess,variable) %>%
+  mutate(variable = recode(variable,
+                           'combined_test_predictions_round' = 'ensemble'))%>%
+  summarize(nCorrect = sum(Correct,na.rm = T))%>%
+  left_join(.,nScales_Model)%>%
+  mutate(PropCorrect = nCorrect/nScales)
+
+ResSummary %>% 
+  filter(label %in% c(3:5))%>%
+  group_by(label) %>%
+  slice_max(PropCorrect)
+
+ResSummary %>% 
+  filter(label %in% c(3:5))%>%
+  group_by(label) %>%
+  summarize(AvgPropCorrect = mean(PropCorrect),
+            SDPropCorrect = sd(PropCorrect))
+
+ResSummary %>% 
+  filter(label %in% c(3:5))%>%
+  filter(variable!='ensemble')%>%
+  group_by(variable) %>%
+  summarize(AvgPropCorrect = mean(PropCorrect),
+            SDPropCorrect = sd(PropCorrect))%>%
+  arrange(AvgPropCorrect)
+
+
+ResSummary %>% 
+  filter(label %in% c(3:5))%>%
+  filter(variable!='ensemble')%>%
+  group_by(variable,PreProcess) %>%
+  summarize(AvgPropCorrect = mean(PropCorrect),
+            SDPropCorrect = sd(PropCorrect))%>%
+  arrange(AvgPropCorrect)
+
+ResSummary %>% 
+  filter(label %in% c(3:5))%>%
+  group_by(variable,PreProcess) %>%
+  summarize(AvgPropCorrect = mean(PropCorrect),
+            SDPropCorrect = sd(PropCorrect))%>%
+  arrange(AvgPropCorrect)
+
+ResSummary %>% 
+  filter(label %in% c(3:5))%>%
+  group_by(label, variable,PreProcess) %>%
+  arrange(PropCorrect)
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
